@@ -1,3 +1,5 @@
+import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
+import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_ivs_chat_sdk_method_channel.dart';
@@ -25,5 +27,13 @@ abstract class FlutterIvsChatSdkPlatform extends PlatformInterface {
 
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<void> createChatRoom(ChatTokenProvider tokenProvider) async {
+    throw UnimplementedError('createChatRoom() has not been implemented.');
+  }
+
+  Future<void> sendMessage(SendMessage message) async {
+    throw UnimplementedError('sendMessage() has not been implemented.');
   }
 }

@@ -1,8 +1,10 @@
 package com.ferns.flutter_ivs_chat_sdk.sdk
 
+import android.util.Log
 import com.amazonaws.ivs.chat.messaging.ChatRoom
 import com.amazonaws.ivs.chat.messaging.ChatRoomListener
 import com.amazonaws.ivs.chat.messaging.ChatToken
+import com.amazonaws.ivs.chat.messaging.ChatTokenCallback
 import com.amazonaws.ivs.chat.messaging.DeleteMessageCallback
 import com.amazonaws.ivs.chat.messaging.DisconnectReason
 import com.amazonaws.ivs.chat.messaging.DisconnectUserCallback
@@ -65,10 +67,8 @@ class FlutterIVSChatSDK {
             chatRoom = ChatRoom(
                 regionOrUrl = chatTokenProvider.region,
                 tokenProvider = { it.onSuccess(token) }
-            )
-            chatRoom!!.listener = roomListener
+            ).apply { listener = roomListener }
             chatRoom!!.connect()
-
             result.success(mapOf("error" to null, "created" to true))
         } catch (e: Exception) {
             result.error(

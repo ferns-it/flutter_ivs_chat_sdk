@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_ivs_chat_sdk/flutter_ivs_chat_sdk.dart';
+import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
+import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -16,46 +18,56 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   final _flutterIvsChatSdkPlugin = FlutterIvsChatSdk();
 
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
+  Future<void> createChatRoom() async {
+    var url =
+        Uri.parse('https://streaming.createroyale.com/users/createchattoken');
+    var response = await http.post(
+      url,
+      body: {
+        "userId": "12345",
+        "roomIdentifier":
+            "arn:aws:ivschat:ap-south-1:300996695197:room/VXUofYh07zx3"
+      },
+    );
+
+    var tokenProvider = ChatTokenProvider.fromJson(response.body);
+    tokenProvider = tokenProvider.copyWith(region: "ap-south-1");
+    if (tokenProvider.region == null) return;
+    _flutterIvsChatSdkPlugin.createChatRoom(tokenProvider);
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _flutterIvsChatSdkPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
+  Future<void> sendMessage() async {
+    final message = SendMessage(content: "How are u?", attributes: {
+      "name": "Sankar",
+      "userId": "63a402582183baa43df75b69",
+      "image": "/assets/images/user.png"
     });
+    await _flutterIvsChatSdkPlugin.sendMessage(message);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
+        appBar: AppBar(title: const Text('IVS Chat SDK Example')),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FilledButton(
+                onPressed: createChatRoom,
+                child: const Text("Create Chat Room"),
+              ),
+              FilledButton(
+                onPressed: sendMessage,
+                child: const Text("Send Message"),
+              ),
+            ],
+          ),
         ),
       ),
     );
