@@ -1,14 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ivs_chat_sdk/flutter_ivs_chat_data_types.dart';
-import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
-import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
 
 import 'flutter_ivs_chat_sdk_platform_interface.dart';
 import 'listeners/chat_event_listener.dart';
-import 'models/chat_room_response.dart';
 
 /// An implementation of [FlutterIvsChatSdkPlatform] that uses method channels.
 class MethodChannelFlutterIvsChatSdk implements FlutterIvsChatSdkPlatform {
