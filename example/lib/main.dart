@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
                   child: const Text("Create & Join"),
                 ),
               )
-            : _ChatBoxWidget(),
+            : const _ChatBoxWidget(),
       ),
     );
   }
@@ -88,11 +88,12 @@ class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
 
   Future<void> scrollAnimation() async {
     return await Future.delayed(
-        const Duration(milliseconds: 100),
-        () => scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.linear));
+      const Duration(milliseconds: 100),
+      () => scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear),
+    );
   }
 
   @override
