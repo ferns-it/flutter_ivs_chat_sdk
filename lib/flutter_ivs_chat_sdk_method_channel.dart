@@ -6,6 +6,7 @@ import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
 import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
 
 import 'flutter_ivs_chat_sdk_platform_interface.dart';
+import 'models/chat_room_response.dart';
 
 /// An implementation of [FlutterIvsChatSdkPlatform] that uses method channels.
 class MethodChannelFlutterIvsChatSdk implements FlutterIvsChatSdkPlatform {
@@ -21,12 +22,18 @@ class MethodChannelFlutterIvsChatSdk implements FlutterIvsChatSdkPlatform {
   }
 
   @override
-  Future<void> createChatRoom(ChatTokenProvider tokenProvider) async {
-    final result = await methodChannel.invokeMethod(
-      'createChatRoom',
-      tokenProvider.toMap(),
-    );
-    inspect(result);
+  Future<ChatRoomResponse> createChatRoom(
+    ChatTokenProvider tokenProvider,
+  ) async {
+    try {
+      final result = await methodChannel.invokeMethod(
+        'createChatRoom',
+        tokenProvider.toMap(),
+      );
+      return ChatRoomResponse.fromMap(result);
+    } on PlatformException catch (e) {
+      return ChatRoomResponse.fromMap(e.details);
+    }
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:flutter_ivs_chat_sdk/models/chat_room_response.dart';
 import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
 import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,7 +14,7 @@ class MockFlutterIvsChatSdkPlatform
   Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future<void> createChatRoom(ChatTokenProvider tokenProvider) {
+  Future<ChatRoomResponse> createChatRoom(ChatTokenProvider tokenProvider) {
     // TODO: implement createChatRoom
     throw UnimplementedError();
   }

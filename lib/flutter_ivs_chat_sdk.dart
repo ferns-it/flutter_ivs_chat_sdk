@@ -5,6 +5,7 @@
 // platforms in the `pubspec.yaml` at
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
+import 'package:flutter_ivs_chat_sdk/models/chat_room_response.dart';
 import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
 
 import 'flutter_ivs_chat_sdk_platform_interface.dart';
@@ -15,7 +16,7 @@ class FlutterIvsChatSdk {
     return FlutterIvsChatSdkPlatform.instance.getPlatformVersion();
   }
 
-  Future<void> createChatRoom(ChatTokenProvider tokenProvider) {
+  Future<ChatRoomResponse> createChatRoom(ChatTokenProvider tokenProvider) {
     return FlutterIvsChatSdkPlatform.instance.createChatRoom(tokenProvider);
   }
 
