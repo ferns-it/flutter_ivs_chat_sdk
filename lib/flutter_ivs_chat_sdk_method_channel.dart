@@ -94,10 +94,9 @@ class MethodChannelFlutterIvsChatSdk implements FlutterIvsChatSdkPlatform {
 
   @override
   Future<void> sendMessage(SendMessage message) async {
-    final result = await methodChannel.invokeMethod(
+    await methodChannel.invokeMethod(
       'sendMessage',
       message.toMap(),
     );
-    inspect(result);
   }
 }

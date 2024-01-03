@@ -1,9 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_ivs_chat_sdk/models/chat_message.dart';
 import 'package:flutter_ivs_chat_sdk_example/widgets/receiver_row_view.dart';
 import 'package:flutter_ivs_chat_sdk_example/widgets/send_row_view.dart';
-import 'package:flutter_ivs_chat_sdk/models/chat_message.dart';
 
 class ChatListView extends StatelessWidget {
   const ChatListView(
@@ -18,7 +16,6 @@ class ChatListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    inspect(messageList);
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       controller: scrollController,
