@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       body: {
         "userId": "12345",
         "roomIdentifier":
-            "arn:aws:ivschat:ap-south-1:300996695197:room/VXUofYh07zx3"
+            "arn:aws:ivschat:ap-south-1:300996695197:room/BTLsjLf4N81X"
       },
     );
 
@@ -62,15 +62,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       roomCreated = chatResponse.created;
     });
-  }
-
-  Future<void> sendMessage() async {
-    final message = SendMessage(content: "How are u?", attributes: {
-      "name": "Sankar",
-      "userId": "63a402582183baa43df75b69",
-      "image": "/assets/images/user.png"
-    });
-    await _flutterIvsChatSdkPlugin.sendMessage(message);
   }
 
   @override
@@ -127,6 +118,8 @@ class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
     widget.flutterIvsChatSdkPlugin.sendMessage(
       SendMessage(content: textEditingController.text, attributes: {
         "name": usernames[Random().nextInt(3)],
+        "userId": "63a402582183baa43df75b69",
+        "image": "/assets/images/user.png"
       }),
     );
     textEditingController.clear();

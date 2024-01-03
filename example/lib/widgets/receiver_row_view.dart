@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ivs_chat_sdk/flutter_ivs_chat_data_types.dart';
+import 'package:intl/intl.dart';
 
 class ReceiverRowView extends StatelessWidget {
   const ReceiverRowView({Key? key, required this.receiverMessage})
       : super(key: key);
 
-  final String receiverMessage;
+  final ChatMessage receiverMessage;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Flexible(
+        Flexible(
           flex: 13,
           fit: FlexFit.tight,
           child: Padding(
-            padding: EdgeInsets.only(left: 10.0, top: 1.0, bottom: 9.0),
+            padding: const EdgeInsets.only(left: 10.0, top: 1.0, bottom: 9.0),
             child: CircleAvatar(
-              backgroundColor: Color(0xFF90C953),
-              child: Text('X',
-                  style: TextStyle(
+              backgroundColor: const Color(0xFF90C953),
+              child: Text(receiverMessage.attributes?['name']?[0] ?? "Y",
+                  style: const TextStyle(
                     color: Colors.black,
                   )),
             ),
@@ -43,22 +45,28 @@ class ReceiverRowView extends StatelessWidget {
                         color: Color(0xFF87D4E6),
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     child: Text(
-                      receiverMessage,
+                      receiverMessage.message,
                       textAlign: TextAlign.left,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                 ],
               ),
-              Container(
-                margin: const EdgeInsets.only(left: 10.0, bottom: 8.0),
-                child: const Text(
-                  '8:55 AM, Today',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 7.0,
-                  ),
-                ),
-              ),
+              receiverMessage.sendTime != null
+                  ? Container(
+                      margin: const EdgeInsets.only(right: 10.0, bottom: 8.0),
+                      child: Text(
+                        formatTime(receiverMessage.sendTime!),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 7.0,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
           //
@@ -72,5 +80,15 @@ class ReceiverRowView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String formatTime(DateTime dateTime) {
+    // Define the format for the time
+    DateFormat timeFormat = DateFormat('h:mm:ss a');
+
+    // Format the DateTime object to a string
+    String formattedTime = timeFormat.format(dateTime);
+
+    return formattedTime;
   }
 }

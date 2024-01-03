@@ -23,7 +23,7 @@ class ChatListView extends StatelessWidget {
       itemBuilder: (context, index) =>
           (messageList[index].sender.userId == currentUserId)
               ? SenderRowView(senderMessage: messageList[index])
-              : ReceiverRowView(receiverMessage: messageList[index].message),
+              : ReceiverRowView(receiverMessage: messageList[index]),
     );
   }
 }
