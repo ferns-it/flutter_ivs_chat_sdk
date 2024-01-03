@@ -1,3 +1,4 @@
+import 'package:flutter_ivs_chat_sdk/listeners/chat_event_listener.dart';
 import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
 import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -6,12 +7,16 @@ import 'flutter_ivs_chat_sdk_method_channel.dart';
 import 'models/chat_room_response.dart';
 
 abstract class FlutterIvsChatSdkPlatform extends PlatformInterface {
+  
+  final ChatEventListener listener;
   /// Constructs a FlutterIvsChatSdkPlatform.
-  FlutterIvsChatSdkPlatform() : super(token: _token);
+  FlutterIvsChatSdkPlatform(this.listener) : super(token: _token) {
+    _instance = MethodChannelFlutterIvsChatSdk(listener);
+  }
 
   static final Object _token = Object();
 
-  static FlutterIvsChatSdkPlatform _instance = MethodChannelFlutterIvsChatSdk();
+  static late FlutterIvsChatSdkPlatform _instance;
 
   /// The default instance of [FlutterIvsChatSdkPlatform] to use.
   ///
@@ -30,7 +35,8 @@ abstract class FlutterIvsChatSdkPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<ChatRoomResponse> createChatRoom(ChatTokenProvider tokenProvider) async {
+  Future<ChatRoomResponse> createChatRoom(
+      ChatTokenProvider tokenProvider) async {
     throw UnimplementedError('createChatRoom() has not been implemented.');
   }
 

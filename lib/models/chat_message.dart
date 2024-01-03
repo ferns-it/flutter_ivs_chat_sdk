@@ -9,12 +9,14 @@ class ChatMessage {
   final String id;
   final String message;
   final Map<String, String>? attributes;
+  final DateTime sendTime;
   final ChatUser sender;
 
   ChatMessage({
     required this.id,
     required this.message,
     this.attributes,
+    required this.sendTime,
     required this.sender,
   });
 
@@ -22,12 +24,14 @@ class ChatMessage {
     String? id,
     String? message,
     Map<String, String>? attributes,
+    DateTime? sendTime,
     ChatUser? sender,
   }) {
     return ChatMessage(
       id: id ?? this.id,
       message: message ?? this.message,
       attributes: attributes ?? this.attributes,
+      sendTime: sendTime ?? this.sendTime,
       sender: sender ?? this.sender,
     );
   }
@@ -37,18 +41,20 @@ class ChatMessage {
       'id': id,
       'message': message,
       'attributes': attributes,
+      'sendTime': sendTime.millisecondsSinceEpoch,
       'sender': sender.toMap(),
     };
   }
 
-  factory ChatMessage.fromMap(Map<String, dynamic> map) {
+  factory ChatMessage.fromMap(Map<dynamic, dynamic> map) {
     return ChatMessage(
       id: map['id'] as String,
       message: map['message'] as String,
       attributes: map['attributes'] != null
-          ? Map<String, String>.from((map['attributes'] as Map<String, String>))
+          ? Map<String, String>.from((map['attributes'] as Map<dynamic, String>))
           : null,
-      sender: ChatUser.fromMap(map['sender'] as Map<String, dynamic>),
+      sendTime: DateTime.parse(map['sendTime']),
+      sender: ChatUser.fromMap(map['sender'] as Map<dynamic, dynamic>),
     );
   }
 
@@ -59,7 +65,7 @@ class ChatMessage {
 
   @override
   String toString() {
-    return 'ChatMessage(id: $id, message: $message, attributes: $attributes, sender: $sender)';
+    return 'ChatMessage(id: $id, message: $message, attributes: $attributes, sendTime: $sendTime, sender: $sender)';
   }
 
   @override
@@ -69,6 +75,7 @@ class ChatMessage {
     return other.id == id &&
         other.message == message &&
         mapEquals(other.attributes, attributes) &&
+        other.sendTime == sendTime &&
         other.sender == sender;
   }
 
@@ -77,6 +84,7 @@ class ChatMessage {
     return id.hashCode ^
         message.hashCode ^
         attributes.hashCode ^
+        sendTime.hashCode ^
         sender.hashCode;
   }
 }

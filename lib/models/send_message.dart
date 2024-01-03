@@ -28,7 +28,7 @@ class SendMessage {
     };
   }
 
-  factory SendMessage.fromMap(Map<String, dynamic> map) {
+  factory SendMessage.fromMap(Map<dynamic, dynamic> map) {
     return SendMessage(
       content: map['content'] as String,
       attributes: map['attributes'] != null

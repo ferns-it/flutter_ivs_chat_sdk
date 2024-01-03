@@ -1,14 +1,22 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ivs_chat_sdk/flutter_ivs_chat_sdk.dart';
 import 'package:flutter_ivs_chat_sdk/models/chat_token_provider.dart';
 import 'package:flutter_ivs_chat_sdk/models/send_message.dart';
+import 'package:flutter_ivs_chat_sdk_example/ivs_chat_listener.dart';
 import 'package:flutter_ivs_chat_sdk_example/widgets/chat_list_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => IVSChatEventListener(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -19,13 +27,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _flutterIvsChatSdkPlugin = FlutterIvsChatSdk();
+  late FlutterIvsChatSdk _flutterIvsChatSdkPlugin;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _flutterIvsChatSdkPlugin = FlutterIvsChatSdk.initialize(
+        context.read<IVSChatEventListener>(),
+      );
+    });
+    super.initState();
+  }
 
   bool roomCreated = false;
 
   Future<void> createChatRoom() async {
-    var url =
-        Uri.parse('https://streaming.createroyale.com/users/createchattoken');
+    var url = Uri.parse(
+      'https://streaming.createroyale.com/users/createchattoken',
+    );
     var response = await http.post(
       url,
       body: {
@@ -70,14 +89,19 @@ class _MyAppState extends State<MyApp> {
                   child: const Text("Create & Join"),
                 ),
               )
-            : const _ChatBoxWidget(),
+            : _ChatBoxWidget(
+                flutterIvsChatSdkPlugin: _flutterIvsChatSdkPlugin,
+              ),
       ),
     );
   }
 }
 
 class _ChatBoxWidget extends StatefulWidget {
-  const _ChatBoxWidget({Key? key}) : super(key: key);
+  const _ChatBoxWidget({Key? key, required this.flutterIvsChatSdkPlugin})
+      : super(key: key);
+
+  final FlutterIvsChatSdk flutterIvsChatSdkPlugin;
 
   @override
   State<_ChatBoxWidget> createState() => _ChatBoxWidgetState();
@@ -85,6 +109,9 @@ class _ChatBoxWidget extends StatefulWidget {
 
 class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
   ScrollController scrollController = ScrollController();
+  TextEditingController textEditingController = TextEditingController();
+
+  static const usernames = ["jack", "Pranav", "Sankar"];
 
   Future<void> scrollAnimation() async {
     return await Future.delayed(
@@ -96,6 +123,15 @@ class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
     );
   }
 
+  Future<void> sendMessage() async {
+    widget.flutterIvsChatSdkPlugin.sendMessage(
+      SendMessage(content: textEditingController.text, attributes: {
+        "name": usernames[Random().nextInt(3)],
+      }),
+    );
+    textEditingController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -105,7 +141,7 @@ class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
           Expanded(
               child: ChatListView(
             scrollController: scrollController,
-            messageList: [],
+            messageList: context.watch<IVSChatEventListener>().messages,
           )),
           Container(
             // height: 50,
@@ -125,9 +161,8 @@ class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
                 Expanded(
                   child: TextFormField(
                     cursorColor: Colors.white,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 1,
-                    maxLines: 6,
+                    keyboardType: TextInputType.text,
+                    controller: textEditingController,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Type your message...',
@@ -144,7 +179,7 @@ class _ChatBoxWidgetState extends State<_ChatBoxWidget> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 5.0),
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: sendMessage,
                         child: const Icon(
                           Icons.send,
                           color: Colors.white,

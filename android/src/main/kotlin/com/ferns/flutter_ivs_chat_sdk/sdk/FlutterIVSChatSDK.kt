@@ -77,7 +77,10 @@ class FlutterIVSChatSDK() {
                 "id" to room.id,
                 "state" to room.state.name
             )
-            val senderDetails = mutableMapOf<String, Any>("userId" to message.sender.userId)
+            val senderDetails = mutableMapOf<String, Any>(
+                "userId" to message.sender.userId,
+                "sendTime" to message.sendTime.toString()
+            )
             message.sender.attributes?.let { senderDetails["attributes"] = it }
 
             val chatMessage = mutableMapOf(
@@ -90,7 +93,7 @@ class FlutterIVSChatSDK() {
             message.attributes?.let { chatMessage["attributes"] = it }
 
             val eventDetails = mapOf(
-                "event-name" to "onConnecting",
+                "event-name" to "onMessageReceived",
                 "room" to roomDetails,
                 "message" to chatMessage,
             )
@@ -116,7 +119,7 @@ class FlutterIVSChatSDK() {
             event.requestId?.let { userDisconnectEventDetails["requestId"] = it }
 
             val eventDetails = mapOf(
-                "event-name" to "onConnecting",
+                "event-name" to "onUserDisconnected",
                 "room" to roomDetails,
                 "event" to userDisconnectEventDetails
             )
@@ -138,7 +141,7 @@ class FlutterIVSChatSDK() {
             event.requestId?.let { receivedEventDetails["requestId"] = it }
 
             val eventDetails = mapOf(
-                "event-name" to "onConnecting",
+                "event-name" to "onEventReceived",
                 "room" to roomDetails,
                 "event" to receivedEventDetails
             )
@@ -161,7 +164,7 @@ class FlutterIVSChatSDK() {
             event.requestId?.let { receivedEventDetails["requestId"] = it }
 
             val eventDetails = mapOf(
-                "event-name" to "onConnecting",
+                "event-name" to "onMessageDeleted",
                 "room" to roomDetails,
                 "event" to receivedEventDetails
             )

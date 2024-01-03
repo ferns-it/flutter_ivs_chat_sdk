@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ivs_chat_sdk_example/widgets/receiver_row_view.dart';
 import 'package:flutter_ivs_chat_sdk_example/widgets/send_row_view.dart';
@@ -16,13 +18,14 @@ class ChatListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    inspect(messageList);
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       controller: scrollController,
       itemCount: messageList.length,
       itemBuilder: (context, index) =>
           (messageList[index].sender.userId == currentUserId)
-              ? SenderRowView(senderMessage: messageList[index].message)
+              ? SenderRowView(senderMessage: messageList[index])
               : ReceiverRowView(receiverMessage: messageList[index].message),
     );
   }

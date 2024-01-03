@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ivs_chat_sdk/flutter_ivs_chat_data_types.dart';
 
 class SenderRowView extends StatelessWidget {
   const SenderRowView({Key? key, required this.senderMessage})
       : super(key: key);
 
-  final String senderMessage;
+  final ChatMessage senderMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +37,12 @@ class SenderRowView extends StatelessWidget {
                         color: Color(0xFF7CE994),
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
                     child: Text(
-                      senderMessage,
+                      senderMessage.message,
                       textAlign: TextAlign.left,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Colors.black),
                     ),
                   ),
                 ],
@@ -56,15 +61,15 @@ class SenderRowView extends StatelessWidget {
           ),
           //
         ),
-        const Flexible(
-          flex: 13,
+        Flexible(
+          flex: 20,
           fit: FlexFit.tight,
           child: Padding(
-            padding: EdgeInsets.only(right: 10.0, top: 1.0, bottom: 9.0),
+            padding: const EdgeInsets.only(right: 10.0, top: 1.0, bottom: 9.0),
             child: CircleAvatar(
-              backgroundColor: Color(0xFF90C953),
-              child: Text('A',
-                  style: TextStyle(
+              backgroundColor: const Color(0xFF90C953),
+              child: Text(senderMessage.attributes?['name']?[0] ?? "X",
+                  style: const TextStyle(
                     color: Colors.black,
                   )),
             ),

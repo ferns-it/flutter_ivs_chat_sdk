@@ -38,7 +38,7 @@ class ChatTokenProvider {
     };
   }
 
-  factory ChatTokenProvider.fromMap(Map<String, dynamic> map) {
+  factory ChatTokenProvider.fromMap(Map<dynamic, dynamic> map) {
     return ChatTokenProvider(
       region: map['region'] != null ? map['region'] as String : null,
       token: map['token'] as String,

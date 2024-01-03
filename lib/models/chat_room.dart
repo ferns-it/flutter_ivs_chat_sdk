@@ -28,7 +28,7 @@ class ChatRoom {
     };
   }
 
-  factory ChatRoom.fromMap(Map<String, dynamic> map) {
+  factory ChatRoom.fromMap(Map<dynamic, dynamic> map) {
     return ChatRoom(
       id: map['id'] as String,
       state: ChatRoomState.fromName(map['state'] as String),

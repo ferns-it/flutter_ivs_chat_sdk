@@ -63,7 +63,7 @@ class ChatEvent {
     };
   }
 
-  factory ChatEvent.fromMap(Map<String, dynamic> map) {
+  factory ChatEvent.fromMap(Map<dynamic, dynamic> map) {
     return ChatEvent(
       id: map['id'] as String,
       eventName: map['eventName'] != null ? map['eventName'] as String : null,
