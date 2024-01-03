@@ -28,33 +28,97 @@ class FlutterIVSChatSDK {
 
     private val roomListener = object : ChatRoomListener {
         override fun onConnecting(room: ChatRoom) {
-            val eventDetails = {
-                ""
-            }
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+            val eventDetails = mapOf<String, Any>(
+                "event-name" to "onConnecting",
+                "room" to roomDetails
+            )
+
         }
 
         override fun onConnected(room: ChatRoom) {
-            // Called when connection has been established
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+            val eventDetails = mapOf<String, Any>(
+                "event-name" to "onConnected",
+                "room" to roomDetails
+            )
         }
 
         override fun onDisconnected(room: ChatRoom, reason: DisconnectReason) {
-            // Called when a room has been disconnected
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+
+            val eventDetails = mapOf<String, Any>(
+                "event-name" to "onDisconnected",
+                "room" to roomDetails,
+                "reason" to reason.name,
+            )
         }
 
         override fun onMessageReceived(room: ChatRoom, message: ChatMessage) {
-            // Called when chat message has been received
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+            val senderDetails = mutableMapOf<String, Any>("userId" to message.sender.userId)
+            message.sender.attributes?.let { senderDetails["attributes"] = it }
+
+            val chatMessage = mutableMapOf(
+                "id" to message.id,
+                "message" to message.content,
+                "sender" to senderDetails
+            )
+
+            message.attributes?.let { chatMessage["attributes"] = it }
+
+            val eventDetails = mapOf(
+                "event-name" to "onConnecting",
+                "room" to roomDetails,
+                "message" to chatMessage,
+            )
+
+
         }
 
         override fun onUserDisconnected(room: ChatRoom, event: DisconnectUserEvent) {
-            TODO("Not yet implemented")
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+            val eventDetails = mapOf<String, Any>(
+                "event-name" to "onConnecting",
+                "room" to roomDetails
+            )
         }
 
         override fun onEventReceived(room: ChatRoom, event: ChatEvent) {
-            // Called when chat event has been received
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+            val eventDetails = mapOf<String, Any>(
+                "event-name" to "onConnecting",
+                "room" to roomDetails
+            )
         }
 
         override fun onMessageDeleted(room: ChatRoom, event: DeleteMessageEvent) {
-            TODO("Not yet implemented")
+            val roomDetails = mapOf<String, Any>(
+                "id" to room.id,
+                "token" to room.state.name
+            )
+            val eventDetails = mapOf<String, Any>(
+                "event-name" to "onConnecting",
+                "room" to roomDetails
+            )
         }
     }
 
