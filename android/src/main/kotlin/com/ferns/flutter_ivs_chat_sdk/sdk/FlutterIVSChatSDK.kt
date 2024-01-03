@@ -28,7 +28,9 @@ class FlutterIVSChatSDK {
 
     private val roomListener = object : ChatRoomListener {
         override fun onConnecting(room: ChatRoom) {
-            // Called when room is establishing the initial connection or reestablishing connection after socket failure/token expiration/etc
+            val eventDetails = {
+                ""
+            }
         }
 
         override fun onConnected(room: ChatRoom) {

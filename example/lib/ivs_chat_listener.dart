@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_ivs_chat_sdk/constants/enums.dart';
 import 'package:flutter_ivs_chat_sdk/listeners/chat_event_listener.dart';
 import 'package:flutter_ivs_chat_sdk/models/chat_event.dart';
 import 'package:flutter_ivs_chat_sdk/models/chat_message.dart';
 import 'package:flutter_ivs_chat_sdk/models/chat_room.dart';
 
-class IVSChatEventListener implements ChatEventListener {
+class IVSChatEventListener extends ChangeNotifier with ChatEventListener {
   List<ChatMessage> messages = [];
 
   @override
@@ -24,6 +25,7 @@ class IVSChatEventListener implements ChatEventListener {
     messages.removeWhere((msg) {
       return event.messageId != null && msg.id == event.messageId;
     });
+    notifyListeners();
   }
 
   @override
@@ -31,6 +33,7 @@ class IVSChatEventListener implements ChatEventListener {
     final isMessageAlreadyExist = messages.any((msg) => msg.id == message.id);
     if (!isMessageAlreadyExist) {
       messages.add(message);
+      notifyListeners();
     }
   }
 

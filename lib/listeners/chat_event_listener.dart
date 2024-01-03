@@ -4,7 +4,7 @@ import 'package:flutter_ivs_chat_sdk/models/chat_room.dart';
 import '../constants/enums.dart';
 import '../models/chat_event.dart';
 
-abstract class ChatEventListener {
+mixin ChatEventListener {
   void onConnected(ChatRoom room);
   void onConnecting(ChatRoom room);
   void onDisconnected(ChatRoom room, DisconnectReason reason);
