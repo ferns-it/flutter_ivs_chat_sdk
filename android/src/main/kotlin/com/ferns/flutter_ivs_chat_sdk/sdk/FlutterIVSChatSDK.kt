@@ -78,15 +78,15 @@ class FlutterIVSChatSDK() {
                 "state" to room.state.name
             )
             val senderDetails = mutableMapOf<String, Any>(
-                "userId" to message.sender.userId,
-                "sendTime" to message.sendTime.toString()
+                "userId" to message.sender.userId
             )
             message.sender.attributes?.let { senderDetails["attributes"] = it }
 
             val chatMessage = mutableMapOf(
                 "id" to message.id,
                 "message" to message.content,
-                "sender" to senderDetails
+                "sender" to senderDetails,
+                "sendTime" to message.sendTime.time
             )
 
 

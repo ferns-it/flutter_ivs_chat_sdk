@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ivs_chat_sdk/flutter_ivs_chat_data_types.dart';
+import 'package:intl/intl.dart';
 
 class SenderRowView extends StatelessWidget {
   const SenderRowView({Key? key, required this.senderMessage})
@@ -47,16 +48,18 @@ class SenderRowView extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                margin: const EdgeInsets.only(right: 10.0, bottom: 8.0),
-                child: const Text(
-                  '8:55 AM, Today',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 7.0,
-                  ),
-                ),
-              ),
+              senderMessage.sendTime != null
+                  ? Container(
+                      margin: const EdgeInsets.only(right: 10.0, bottom: 8.0),
+                      child: Text(
+                        formatTime(senderMessage.sendTime!),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 7.0,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
           //
@@ -77,5 +80,15 @@ class SenderRowView extends StatelessWidget {
         )
       ],
     );
+  }
+
+  String formatTime(DateTime dateTime) {
+    // Define the format for the time
+    DateFormat timeFormat = DateFormat('h:mm:ss a');
+
+    // Format the DateTime object to a string
+    String formattedTime = timeFormat.format(dateTime);
+
+    return formattedTime;
   }
 }

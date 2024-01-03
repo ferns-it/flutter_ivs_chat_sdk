@@ -9,7 +9,7 @@ class ChatMessage {
   final String id;
   final String message;
   final Map<String, String>? attributes;
-  final DateTime sendTime;
+  final DateTime? sendTime;
   final ChatUser sender;
 
   ChatMessage({
@@ -41,7 +41,7 @@ class ChatMessage {
       'id': id,
       'message': message,
       'attributes': attributes,
-      'sendTime': sendTime.millisecondsSinceEpoch,
+      'sendTime': sendTime?.millisecondsSinceEpoch,
       'sender': sender.toMap(),
     };
   }
@@ -51,9 +51,12 @@ class ChatMessage {
       id: map['id'] as String,
       message: map['message'] as String,
       attributes: map['attributes'] != null
-          ? Map<String, String>.from((map['attributes'] as Map<dynamic, String>))
+          ? Map<String, String>.from(
+              (map['attributes'] as Map<dynamic, dynamic>))
           : null,
-      sendTime: DateTime.parse(map['sendTime']),
+      sendTime: map['sendTime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['sendTime'])
+          : null,
       sender: ChatUser.fromMap(map['sender'] as Map<dynamic, dynamic>),
     );
   }
