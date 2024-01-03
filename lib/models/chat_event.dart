@@ -5,20 +5,22 @@ import 'package:flutter/foundation.dart';
 
 class ChatEvent {
   final String id;
-  final String eventName;
+  final String? eventName;
   final bool isSystemEvent;
   final String? requestId;
   final String? reason;
   final String? userId;
+  final String? messageId;
   final DateTime sendTime;
   final Map<String, String> attributes;
   ChatEvent({
     required this.id,
     required this.eventName,
-    required this.isSystemEvent,
+    this.isSystemEvent = false,
     this.requestId,
     this.reason,
     this.userId,
+    this.messageId,
     required this.sendTime,
     required this.attributes,
   });
@@ -30,6 +32,7 @@ class ChatEvent {
     String? requestId,
     String? reason,
     String? userId,
+    String? messageId,
     DateTime? sendTime,
     Map<String, String>? attributes,
   }) {
@@ -40,6 +43,7 @@ class ChatEvent {
       requestId: requestId ?? this.requestId,
       reason: reason ?? this.reason,
       userId: userId ?? this.userId,
+      messageId: messageId ?? this.messageId,
       sendTime: sendTime ?? this.sendTime,
       attributes: attributes ?? this.attributes,
     );
@@ -53,6 +57,7 @@ class ChatEvent {
       'requestId': requestId,
       'reason': reason,
       'userId': userId,
+      'messageId': messageId,
       'sendTime': sendTime.millisecondsSinceEpoch,
       'attributes': attributes,
     };
@@ -61,11 +66,12 @@ class ChatEvent {
   factory ChatEvent.fromMap(Map<String, dynamic> map) {
     return ChatEvent(
       id: map['id'] as String,
-      eventName: map['eventName'] as String,
+      eventName: map['eventName'] != null ? map['eventName'] as String : null,
       isSystemEvent: map['isSystemEvent'] as bool,
       requestId: map['requestId'] != null ? map['requestId'] as String : null,
       reason: map['reason'] != null ? map['reason'] as String : null,
       userId: map['userId'] != null ? map['userId'] as String : null,
+      messageId: map['messageId'] != null ? map['messageId'] as String : null,
       sendTime: DateTime.fromMillisecondsSinceEpoch(map['sendTime'] as int),
       attributes:
           Map<String, String>.from((map['attributes'] as Map<String, String>)),
@@ -79,7 +85,7 @@ class ChatEvent {
 
   @override
   String toString() {
-    return 'ChatEvent(id: $id, eventName: $eventName, isSystemEvent: $isSystemEvent, requestId: $requestId, reason: $reason, userId: $userId, sendTime: $sendTime, attributes: $attributes)';
+    return 'ChatEvent(id: $id, eventName: $eventName, isSystemEvent: $isSystemEvent, requestId: $requestId, reason: $reason, userId: $userId, messageId: $messageId, sendTime: $sendTime, attributes: $attributes)';
   }
 
   @override
@@ -92,6 +98,7 @@ class ChatEvent {
         other.requestId == requestId &&
         other.reason == reason &&
         other.userId == userId &&
+        other.messageId == messageId &&
         other.sendTime == sendTime &&
         mapEquals(other.attributes, attributes);
   }
@@ -104,6 +111,7 @@ class ChatEvent {
         requestId.hashCode ^
         reason.hashCode ^
         userId.hashCode ^
+        messageId.hashCode ^
         sendTime.hashCode ^
         attributes.hashCode;
   }
