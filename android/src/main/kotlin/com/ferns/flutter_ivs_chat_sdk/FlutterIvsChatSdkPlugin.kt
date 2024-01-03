@@ -1,10 +1,13 @@
 package com.ferns.flutter_ivs_chat_sdk
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.util.Log
 import com.ferns.flutter_ivs_chat_sdk.models.ChatTokenProvider
 import com.ferns.flutter_ivs_chat_sdk.sdk.FlutterIVSChatSDK
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -15,7 +18,8 @@ import java.util.Date
 import java.util.Locale
 
 /** FlutterIvsChatSdkPlugin */
-class FlutterIvsChatSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamHandler {
+class FlutterIvsChatSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamHandler,
+    ActivityAware {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -36,6 +40,7 @@ class FlutterIvsChatSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.S
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, METHOD_CHANNEL)
         channel.setMethodCallHandler(this)
         eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, EVENT_CHANNEL)
+        eventChannel.setStreamHandler(this)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -86,5 +91,21 @@ class FlutterIvsChatSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.S
 
     override fun onCancel(args: Any?) {
         eventSink = null
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        flutterIVSChatSDK.onAttachedToActivity(binding.activity)
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        flutterIVSChatSDK.onReattachedToActivityForConfigChanges(binding.activity)
+    }
+
+    override fun onDetachedFromActivity() {
+        TODO("Not yet implemented")
     }
 }

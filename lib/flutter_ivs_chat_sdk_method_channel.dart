@@ -12,7 +12,18 @@ import 'models/chat_room_response.dart';
 class MethodChannelFlutterIvsChatSdk implements FlutterIvsChatSdkPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('flutter_ivs_chat_sdk');
+  final methodChannel = const MethodChannel('com.ferns/flutter_ivs_chat_sdk');
+
+  /// The event channel used to interact with the native platform.
+  @visibleForTesting
+  final eventChannel =
+      const EventChannel('com.ferns/flutter_ivs_chat_sdk_event_channel');
+
+  MethodChannelFlutterIvsChatSdk() {
+    eventChannel.receiveBroadcastStream().listen((event) {
+      log(event.toString());
+    });
+  }
 
   @override
   Future<String?> getPlatformVersion() async {

@@ -1,10 +1,10 @@
 package com.ferns.flutter_ivs_chat_sdk.sdk
 
+import android.app.Activity
 import android.util.Log
 import com.amazonaws.ivs.chat.messaging.ChatRoom
 import com.amazonaws.ivs.chat.messaging.ChatRoomListener
 import com.amazonaws.ivs.chat.messaging.ChatToken
-import com.amazonaws.ivs.chat.messaging.ChatTokenCallback
 import com.amazonaws.ivs.chat.messaging.DeleteMessageCallback
 import com.amazonaws.ivs.chat.messaging.DisconnectReason
 import com.amazonaws.ivs.chat.messaging.DisconnectUserCallback
@@ -17,43 +17,51 @@ import com.amazonaws.ivs.chat.messaging.entities.DisconnectUserEvent
 import com.amazonaws.ivs.chat.messaging.requests.DeleteMessageRequest
 import com.amazonaws.ivs.chat.messaging.requests.DisconnectUserRequest
 import com.amazonaws.ivs.chat.messaging.requests.SendMessageRequest
+import com.ferns.flutter_ivs_chat_sdk.FlutterIvsChatSdkPlugin
 import com.ferns.flutter_ivs_chat_sdk.models.ChatTokenProvider
 import io.flutter.plugin.common.MethodChannel
 import java.lang.Exception
 
-class FlutterIVSChatSDK {
+private const val TAG = "Flutter_IVS_Chat_SDK"
+
+
+class FlutterIVSChatSDK() {
 
     private var chatRoom: ChatRoom? = null;
+    private var activity: Activity? = null;
 
 
     private val roomListener = object : ChatRoomListener {
         override fun onConnecting(room: ChatRoom) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
             val eventDetails = mapOf<String, Any>(
                 "event-name" to "onConnecting",
                 "room" to roomDetails
             )
 
+            sendEventToEventChannel(eventDetails)
+
         }
 
         override fun onConnected(room: ChatRoom) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
             val eventDetails = mapOf<String, Any>(
                 "event-name" to "onConnected",
                 "room" to roomDetails
             )
+            sendEventToEventChannel(eventDetails)
         }
 
         override fun onDisconnected(room: ChatRoom, reason: DisconnectReason) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
 
             val eventDetails = mapOf<String, Any>(
@@ -61,12 +69,13 @@ class FlutterIVSChatSDK {
                 "room" to roomDetails,
                 "reason" to reason.name,
             )
+            sendEventToEventChannel(eventDetails)
         }
 
         override fun onMessageReceived(room: ChatRoom, message: ChatMessage) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
             val senderDetails = mutableMapOf<String, Any>("userId" to message.sender.userId)
             message.sender.attributes?.let { senderDetails["attributes"] = it }
@@ -77,6 +86,7 @@ class FlutterIVSChatSDK {
                 "sender" to senderDetails
             )
 
+
             message.attributes?.let { chatMessage["attributes"] = it }
 
             val eventDetails = mapOf(
@@ -84,6 +94,7 @@ class FlutterIVSChatSDK {
                 "room" to roomDetails,
                 "message" to chatMessage,
             )
+            sendEventToEventChannel(eventDetails)
 
 
         }
@@ -91,34 +102,87 @@ class FlutterIVSChatSDK {
         override fun onUserDisconnected(room: ChatRoom, event: DisconnectUserEvent) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
-            val eventDetails = mapOf<String, Any>(
+
+            val userDisconnectEventDetails = mutableMapOf<String, Any>(
+                "id" to event.id,
+                "userId" to event.userId,
+                "sendTime" to event.sendTime.toString()
+            )
+
+            event.attributes?.let { userDisconnectEventDetails["attributes"] = it }
+            event.reason?.let { userDisconnectEventDetails["reason"] = it }
+            event.requestId?.let { userDisconnectEventDetails["requestId"] = it }
+
+            val eventDetails = mapOf(
                 "event-name" to "onConnecting",
-                "room" to roomDetails
+                "room" to roomDetails,
+                "event" to userDisconnectEventDetails
             )
+            sendEventToEventChannel(eventDetails)
         }
 
         override fun onEventReceived(room: ChatRoom, event: ChatEvent) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
-            val eventDetails = mapOf<String, Any>(
+            val receivedEventDetails = mutableMapOf<String, Any>(
+                "id" to event.id,
+                "eventName" to event.eventName,
+                "sendTime" to event.sendTime.toString()
+            )
+
+            event.attributes?.let { receivedEventDetails["attributes"] = it }
+            event.requestId?.let { receivedEventDetails["requestId"] = it }
+
+            val eventDetails = mapOf(
                 "event-name" to "onConnecting",
-                "room" to roomDetails
+                "room" to roomDetails,
+                "event" to receivedEventDetails
             )
+            sendEventToEventChannel(eventDetails)
         }
 
         override fun onMessageDeleted(room: ChatRoom, event: DeleteMessageEvent) {
             val roomDetails = mapOf<String, Any>(
                 "id" to room.id,
-                "token" to room.state.name
+                "state" to room.state.name
             )
-            val eventDetails = mapOf<String, Any>(
+            val receivedEventDetails = mutableMapOf<String, Any>(
+                "id" to event.id,
+                "messageId" to event.messageId,
+                "sendTime" to event.sendTime.toString()
+            )
+
+            event.attributes?.let { receivedEventDetails["attributes"] = it }
+            event.reason?.let { receivedEventDetails["reason"] = it }
+            event.requestId?.let { receivedEventDetails["requestId"] = it }
+
+            val eventDetails = mapOf(
                 "event-name" to "onConnecting",
-                "room" to roomDetails
+                "room" to roomDetails,
+                "event" to receivedEventDetails
             )
+            sendEventToEventChannel(eventDetails)
+        }
+    }
+
+    fun onAttachedToActivity(activity: Activity) {
+        this.activity = activity
+        Log.d(TAG, "Activity Attached!")
+    }
+
+    fun onReattachedToActivityForConfigChanges(activity: Activity) {
+        this.activity = activity
+        Log.d(TAG, "Activity Re-Attached!")
+    }
+
+
+    fun sendEventToEventChannel(eventDetails: Map<String, Any>) {
+        activity?.runOnUiThread {
+            FlutterIvsChatSdkPlugin.eventSink?.success(eventDetails)
         }
     }
 

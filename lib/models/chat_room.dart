@@ -1,35 +1,37 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import '../constants/enums.dart';
+
 class ChatRoom {
   final String id;
-  final String token;
+  final ChatRoomState state;
   ChatRoom({
     required this.id,
-    required this.token,
+    required this.state,
   });
 
   ChatRoom copyWith({
     String? id,
-    String? token,
+    ChatRoomState? state,
   }) {
     return ChatRoom(
       id: id ?? this.id,
-      token: token ?? this.token,
+      state: state ?? this.state,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'token': token,
+      'state': state.name,
     };
   }
 
   factory ChatRoom.fromMap(Map<String, dynamic> map) {
     return ChatRoom(
       id: map['id'] as String,
-      token: map['token'] as String,
+      state: ChatRoomState.fromName(map['state'] as String),
     );
   }
 
@@ -39,15 +41,15 @@ class ChatRoom {
       ChatRoom.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'ChatRoom(id: $id, token: $token)';
+  String toString() => 'ChatRoom(id: $id, state: $state)';
 
   @override
   bool operator ==(covariant ChatRoom other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && other.token == token;
+    return other.id == id && other.state == state;
   }
 
   @override
-  int get hashCode => id.hashCode ^ token.hashCode;
+  int get hashCode => id.hashCode ^ state.hashCode;
 }
