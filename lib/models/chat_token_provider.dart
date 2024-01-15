@@ -4,8 +4,8 @@ import 'dart:convert';
 class ChatTokenProvider {
   final String? region;
   final String token;
-  final String? sessionExpirationTime;
-  final String? tokenExpirationTime;
+  final DateTime? sessionExpirationTime;
+  final DateTime? tokenExpirationTime;
 
   ChatTokenProvider({
     required this.region,
@@ -17,8 +17,8 @@ class ChatTokenProvider {
   ChatTokenProvider copyWith({
     String? region,
     String? token,
-    String? sessionExpirationTime,
-    String? tokenExpirationTime,
+    DateTime? sessionExpirationTime,
+    DateTime? tokenExpirationTime,
   }) {
     return ChatTokenProvider(
       region: region ?? this.region,
@@ -33,17 +33,21 @@ class ChatTokenProvider {
     return <String, dynamic>{
       'region': region,
       'token': token,
-      'sessionExpirationTime': sessionExpirationTime,
-      'tokenExpirationTime': tokenExpirationTime,
+      'sessionExpirationTime': sessionExpirationTime?.millisecondsSinceEpoch,
+      'tokenExpirationTime': tokenExpirationTime?.millisecondsSinceEpoch,
     };
   }
 
-  factory ChatTokenProvider.fromMap(Map<dynamic, dynamic> map) {
+  factory ChatTokenProvider.fromMap(Map<String, dynamic> map) {
     return ChatTokenProvider(
       region: map['region'] != null ? map['region'] as String : null,
       token: map['token'] as String,
-      sessionExpirationTime: map['sessionExpirationTime'] != null ? map['sessionExpirationTime'] as String : null,
-      tokenExpirationTime: map['tokenExpirationTime'] != null ? map['tokenExpirationTime'] as String : null,
+      sessionExpirationTime: map['sessionExpirationTime'] != null
+          ? DateTime.parse(map['sessionExpirationTime'])
+          : null,
+      tokenExpirationTime: map['tokenExpirationTime'] != null
+          ? DateTime.parse(map['tokenExpirationTime'])
+          : null,
     );
   }
 

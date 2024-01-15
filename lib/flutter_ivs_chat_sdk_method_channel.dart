@@ -73,12 +73,12 @@ class MethodChannelFlutterIvsChatSdk implements FlutterIvsChatSdkPlatform {
   }
 
   @override
-  Future<ChatRoomResponse> createChatRoom(
+  Future<ChatRoomResponse> joinChatRoom(
     ChatTokenProvider tokenProvider,
   ) async {
     try {
       final result = await methodChannel.invokeMethod(
-        'createChatRoom',
+        'joinChatRoom',
         tokenProvider.toMap(),
       );
       return ChatRoomResponse.fromMap(result);

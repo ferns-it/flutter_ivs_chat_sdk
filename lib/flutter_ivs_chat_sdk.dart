@@ -32,7 +32,7 @@ class FlutterIvsChatSdk {
   }
 
   Future<ChatRoomResponse> createChatRoom(ChatTokenProvider tokenProvider) {
-    return _platform.createChatRoom(tokenProvider);
+    return _platform.joinChatRoom(tokenProvider);
   }
 
   Future<void> sendMessage(SendMessage message) async {

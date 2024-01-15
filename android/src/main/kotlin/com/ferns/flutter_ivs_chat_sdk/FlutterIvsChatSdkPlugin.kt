@@ -1,8 +1,5 @@
 package com.ferns.flutter_ivs_chat_sdk
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.util.Log
 import com.ferns.flutter_ivs_chat_sdk.models.ChatTokenProvider
 import com.ferns.flutter_ivs_chat_sdk.sdk.FlutterIVSChatSDK
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -50,22 +47,21 @@ class FlutterIvsChatSdkPlugin : FlutterPlugin, MethodCallHandler, EventChannel.S
                 result.success("Android ${android.os.Build.VERSION.RELEASE}")
             }
 
-            "createChatRoom" -> {
+            "joinChatRoom" -> {
                 val args: Map<*, *> = call.arguments as Map<*, *>
                 val region: String = args["region"] as String
                 val token: String = args["token"] as String
-                val sessionExpTime: String = args["sessionExpirationTime"] as String
-                val tokenExpirationTime: String = args["tokenExpirationTime"] as String
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                val parsedSessionExpTime: Date? = dateFormat.parse(sessionExpTime)
-                val parsedTokenExpirationTime: Date? = dateFormat.parse(tokenExpirationTime)
+                val sessionExpTime: Long = args["sessionExpirationTime"] as Long
+                val tokenExpirationTime: Long = args["tokenExpirationTime"] as Long
+                val sessionExpDate = Date(sessionExpTime)
+                val tokenExpDate = Date(tokenExpirationTime)
                 val chatTokenProvider = ChatTokenProvider(
                     region = region,
                     token = token,
-                    sessionExpirationTime = parsedSessionExpTime,
-                    tokenExpirationTime = parsedTokenExpirationTime
+                    sessionExpirationTime = sessionExpDate,
+                    tokenExpirationTime = tokenExpDate
                 )
-                flutterIVSChatSDK.createChatRoom(chatTokenProvider, result)
+                flutterIVSChatSDK.joinChatRoom(chatTokenProvider, result)
             }
 
             "sendMessage" -> {

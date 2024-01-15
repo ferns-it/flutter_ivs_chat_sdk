@@ -190,7 +190,7 @@ class FlutterIVSChatSDK() {
     }
 
 
-    fun createChatRoom(chatTokenProvider: ChatTokenProvider, result: MethodChannel.Result) {
+    fun joinChatRoom(chatTokenProvider: ChatTokenProvider, result: MethodChannel.Result) {
         try {
             val token = ChatToken(
                 chatTokenProvider.token,

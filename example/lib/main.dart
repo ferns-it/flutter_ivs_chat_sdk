@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       body: {
         "userId": "12345",
         "roomIdentifier":
-            "arn:aws:ivschat:ap-south-1:300996695197:room/BTLsjLf4N81X"
+            "arn:aws:ivschat:ap-south-1:300996695197:room/7DYYSIl7C8Jv"
       },
     );
 
